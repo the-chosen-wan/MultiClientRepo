@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+    <style>
+        body {
+            background-color: white !important;
+            font-family: "Asap", sans-serif;
+            color: #989898;
+            margin: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="masthead">
+        <div class="container h-100">
+            <div class="row h-50 align-items-center">
+                <div class="col-12 text-center">
+                    <h1 class="font-weight-light">Welcome <%= firstName %>
+                    </h1>
+                    <p class="lead">Find your texts below</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid px-1 py-5 mx-auto">
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-7 col-lg-8 col-md-9 col-11 text-center">
+                <h3>Upload your text</h3>
+                <br>
+                <div>
+                    <form class="form-card" name="text-form" method="post" id="text-form" action="/text">
+                        <div class="row justify-content-between text-center">
+                            <div>
+                                <textarea type="text" id="text" name="text" placeholder="Enter here..." form="text-form"
+                                    rows="4" cols="100" style="display:none;"></textarea>
+                                <input type="file" class="form-control" id="text-file" name="text-file" form="text-form" />
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row justify-content-center">
+                            <div class="form-group col-sm-6"> <button type="button" class="btn-block btn-primary-black"
+                                    id="submit-text-form">Submit</button> </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-1 py-5 mx-auto">
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-7 col-lg-8 col-md-9 col-11 text-center">
+                <h3>See/Download your text</h3>
+                <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <% var count=0 %>
+            <% chats.forEach((chat)=>{ %>
+                <div class="justify-content-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <% var allChat=chat.CHAT.split('\n') %>
+                                <% allChat.forEach((a)=> { %>
+                                    <p class="card-text textarea_<%= count %>">
+                                        <%= a %>
+                                    </p>
+                                    <% }) %>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <br>
+                    <div>
+                        <div class="form-group text-center"> <button type="button" class="btn-primary-black download"
+                                id="download_<%= count %>">Download</button> 
+                                <button type="button" class="btn-primary-black delete"
+                                id="<%= chat.ID %>">Delete</button> </div>
+                    </div>
+                </div>
+                <% count=count + 1 %>
+                    <% }) %>
+    </div>
+
+    <script type="text/javascript">
+
+        function down(file, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', file);
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        const downloads = document.getElementsByClassName("download")
+
+        Array.from(downloads).forEach((download) => {
+            let id = download.getAttribute("id")
+            let textId = "textarea_" + id.split('_')[1]
+            const textarea = document.getElementsByClassName(textId)
+
+            download.addEventListener("click", () => {
+                var text = ""
+
+                Array.from(textarea).forEach((area) => {
+                    text = text + area.innerHTML
+                })
+
+                down("download.txt", text)
+            })
+        })
+    </script>
+    <script>
+        const deletes = document.getElementsByClassName("delete")
+
+        Array.from(deletes).forEach((deleteButton) => {
+            let id = deleteButton.getAttribute("id")
+
+            deleteButton.addEventListener("click", () => {
+                $.ajax({
+                    url: "/text",
+                    type: "POST",
+                    data: {
+                        id: id
+                    },
+                    success: function (result) {
+                        location.reload();
+                    }
+                });
+            })
+        })
+    </script>
+    <script>
+        var submit = document.getElementById("submit-text-form");
+        var file  = document.getElementById("text-file");
+        var text = document.getElementById("text");
+        var form = document.getElementById("text-form");
+
+        submit.addEventListener("click", function () {
+            const fileBlob = file.files[0];
+
+            if(fileBlob===undefined||["txt","docx"].indexOf(fileBlob.name.split('.')[1]) != -1){
+                var fileReader = new FileReader();
+
+                fileReader.onload = function (e) {
+                    text.innerText = e.target.result;
+                    form.submit();
+                }
+
+                fileReader.readAsText(fileBlob);
+            }
+            // else if(["pdf"].indexOf(fileBlob.name.split('.'))){
+            //     var fileReader = new FileReader();
+
+            //     fileReader.onload = function (e) {
+            //         form.submit();
+            //     }
+
+            //     fileReader.readAsText(fileBlob);
+            // }
+            else{
+                alert("Please upload a text file");
+            }
+
+            form.reset()
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+    <style>
+        body {
+    background-color: white !important;
+    font-family: "Asap", sans-serif;
+    color: #989898;
+    margin: 10px;
+    font-size: 16px;
+}
+
+        #demo {
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .green {
+            background-color: #6fb936;
+        }
+
+        .thumb {
+            margin-bottom: 30px;
+        }
+
+        .page-top {
+            margin-top: 85px;
+        }
+
+
+        img.zoom {
+            width: 100%;
+            height: 200px;
+            border-radius: 5px;
+            object-fit: cover;
+            -webkit-transition: all .3s ease-in-out;
+            -moz-transition: all .3s ease-in-out;
+            -o-transition: all .3s ease-in-out;
+            -ms-transition: all .3s ease-in-out;
+        }
+
+
+        .transition {
+            -webkit-transform: scale(1.2);
+            -moz-transform: scale(1.2);
+            -o-transform: scale(1.2);
+            transform: scale(1.2);
+        }
+
+        .modal-header {
+
+            border-bottom: none;
+        }
+
+        .modal-title {
+            color: #000;
+        }
+
+        .modal-footer {
+            display: none;
+        }
+    </style>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+    <title>Images</title>
+</head>
+<body>
+    <header class="masthead">
+        <div class="container h-100">
+            <div class="row h-50 align-items-center">
+                <div class="col-12 text-center">
+                    <h1 class="font-weight-light">Manager</h1>
+                    <p class="lead">Find your images below</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <% var allImages = {} %>
+    <% var firstName = {} %>
+
+    <% images.forEach((image) => { %>
+        <% if (allImages[image.EMAIL]) { %>
+            <% allImages[image.EMAIL].push(image) %>
+        <% } else { %>
+            <% allImages[image.EMAIL] = [image] %>
+            <% firstName[image.EMAIL] = image.FNAME %>
+        <% } %>
+
+    <% }) %>
+
+    <% var count = 0 %>
+    <% for (const [key, value] of Object.entries(allImages)) { %>
+
+        <header class="masthead">
+            <div class="container h-100">
+                <div class="row h-50 align-items-center">
+                    <div class="col-12 text-center">
+                        <p class="lead">User <%= firstName[key] %> </p>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <% var dataurls = [] %>
+        <% var prevurl = "" %>
+        <% var ids = "" %>
+
+        <div class="container page-top">
+            <div class="row">
+        <% value.forEach((image) => { %>
+        
+                    <% var url = image.IMAGE%>
+                    <% url = url.toString() %>
+                    <% if(url.startsWith("data")) { %>
+                        <% if(prevurl!="") { %>
+                            <% count = count + 1 %>
+                            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                                <div>
+                                    <a href="<%= prevurl %>" class="fancybox" rel="ligthbox">
+                                        <img src="<%= prevurl %>" class="zoom img-fluid" alt="" id="image_<%= count %>">
+                                    </a>
+                                </div>
+                                <br>
+                                <div class="row justify-content-center">
+                                    <div class="form-group col-sm-6"> <button type="button" class="btn-block btn-primary-white download"
+                                            id="download_<%= count %>">Download</button> </div>
+        
+                                    <div class="form-group col-sm-6"> <button type="button" class="btn-block btn-primary-white delete"
+                                        id="<%= ids %>" >Delete</button> </div>
+                                </div>
+                            </div>
+                            <% dataurls.push(prevurl) %>
+                            <% prevurl = url %>
+                            <% ids = image.ID %>
+                        <% } else { %>
+                        <% prevurl = url %>
+                        <% ids = image.ID %>
+                        <% } %>
+                    
+                    <% } else { %>
+                    <% prevurl = prevurl + url %>
+                    <% ids = ids + "," + image.ID %>
+                    <% } %>
+                    <% }) %>
+        
+                    <% dataurls.push(prevurl) %>
+                    <% count = count + 1 %>
+                    <% if(prevurl!="") { %>
+                    <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                        <div>
+                            <a href="<%= prevurl %>" class="fancybox" rel="ligthbox">
+                                <img src="<%= prevurl %>" class="zoom img-fluid" alt="" id="image_<%= count %>">
+                            </a>
+                        </div>
+                        <br>
+                        <div class="row justify-content-center">
+                            <div class="form-group col-sm-6"> <button type="button" class="btn-block btn-primary-white download"
+                                    id="download_<%= count %>">Download</button> </div>
+        
+                            <div class="form-group col-sm-6"> <button type="button" class="btn-block btn-primary-white delete"
+                                id="<%= ids %>">Delete</button> </div>
+                        </div>
+                    </div>
+                    <% } %>
+        <% } %>
+            </div>
+        </div>
+
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(".fancybox").fancybox({
+                openEffect: "none",
+                closeEffect: "none"
+            });
+
+            $(".zoom").hover(function () {
+
+                $(this).addClass('transition');
+            }, function () {
+
+                $(this).removeClass('transition');
+            });
+        });
+
+        </script>
+
+        <script>
+            const deletes = document.getElementsByClassName("delete")
+    
+            Array.from(deletes).forEach((deleteButton) => {
+                deleteButton.addEventListener("click", () => {
+                    fetch("/manager/image", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            ids: deleteButton.getAttribute("id")
+                        })
+                    }).then((res) => {
+                        location.reload()
+                    })
+                })
+            })
+        </script>
+
+<script>
+    function down(file, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href',text);
+            element.setAttribute('download', file);
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+    
+    const downloads = document.getElementsByClassName("download")
+
+    Array.from(downloads).forEach((download) => {
+        let id = download.getAttribute("id")
+        let textId = "image_" + id.split('_')[1]
+        const img = document.getElementById(textId)
+
+        download.addEventListener("click", () => {
+            var canvas = document.createElement('canvas');
+
+            var context = canvas.getContext('2d');
+            canvas.height = img.naturalHeight;
+            canvas.width = img.naturalWidth;
+            context.drawImage(img, 0, 0);
+            var dataURL = canvas.toDataURL('image/jpeg');
+            down("download.jpeg", dataURL)
+        })
+    })
+</script>
+</body>
+</html>

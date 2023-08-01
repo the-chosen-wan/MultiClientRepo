@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link href="/styles/register.css" rel="stylesheet">
+    <script src="/scripts/register.js" defer></script>
+    <title>Register Page</title>
+</head>
+
+<body>
+    <div class="container-fluid px-1 py-5 mx-auto">
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-7 col-lg-8 col-md-9 col-11 text-center">
+                <h3>Register</h3>
+                <div class="card">
+                    <h5 class="text-center mb-4">Enter your details</h5>
+                    <form class="form-card" id="register-form" action="/" method="post" autocomplete="off">
+                        <div class="row justify-content-between text-left">
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label
+                                    class="form-control-label px-3">First name<span class="text-danger">
+                                        *</span></label>
+                                <input type="text" id="fname" name="fname" placeholder="Enter your first name" required>
+                            </div>
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label
+                                    class="form-control-label px-3">Last
+                                    name<span class="text-danger"> *</span></label> <input type="text" id="lname"
+                                    name="lname" placeholder="Enter your last name" required> </div>
+                        </div>
+                        <div class="row justify-content-between text-left">
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label
+                                    class="form-control-label px-3">Email<span class="text-danger">
+                                        *</span></label> <input type="email" id="email" name="email" placeholder="" required>
+                            </div>
+                            <div class="form-group col-sm-6 flex-column d-flex"> <label
+                                    class="form-control-label px-3">Password<span class="text-danger"> *</span></label>
+                                <input type="password" id="password" name="password" placeholder="" required>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="form-group col-sm-6"> <button type="button"
+                                    class="btn-block btn-primary" id="submit-register-form">Submit
+                                    </button> </div>
+                        </div>
+
+                        <div class="rwo justify-content-center">
+                            <p>
+                                Already have an account ? <a href="/login"> Sign in </a>
+                            </p>
+                        </div>
+                        <div class="rwo justify-content-center">
+                            <p>
+                                <span class="text-danger" style="display:none;" id="warning">User already exists</span>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
